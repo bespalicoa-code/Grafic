@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planificatorul meu</title>
+<style>
+:root {
+    --background: #f4f6fb;
+    --card: #ffffff;
+    --text: #171923;
+    --muted: #747b8c;
+    --border: #e7e9f0;
+    --primary: #5b5cf0;
+    --primary-light: #8182ff;
+    --green: #20a464;
+    --red: #e5484d;
+    --orange: #f59e0b;
+}
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background:
+        linear-gradient(135deg, #f7f8fc, #eef0ff);
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+    color: var(--text);
+}
+.container {
+    max-width: 1150px;
+    margin: auto;
+    padding: 25px;
+}
+/* HEADER */
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.logo h1 {
+    margin: 0;
+    font-size: 32px;
+}
+.logo p {
+    margin: 5px 0;
+    color: var(--muted);
+}
+button {
+    border: 0;
+    cursor: pointer;
+}
+.today-button {
+    background: var(--primary);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 13px;
+    font-weight: bold;
+}
+/* CARD */
+.card {
+    background: var(--card);
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow:
+        0 10px 30px rgba(30, 36, 64, 0.07);
+}
+/* CALENDAR HEADER */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.month-title {
+    font-size: 24px;
+    font-weight: 800;
+    text-transform: capitalize;
+}
+.navigation {
+    display: flex;
+    gap: 8px;
+}
+.navigation button {
+    background: #f0f1f7;
+    padding: 10px 15px;
+    border-radius: 12px;
+    font-size: 18px;
+}
+/* WEEK */
+.week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 7px;
+}
+.week div {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: bold;
+    padding: 7px;
+}
+/* CALENDAR */
+.calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 7px;
+}
+.day {
+    min-height: 90px;
+    background: #fafbfe;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 9px;
+    cursor: pointer;
+    transition: 0.15s;
+}
+.day:hover {
+    transform: translateY(-2px);
+    border-color: #bfc2ff;
+}
+.day.other-month {
+    opacity: 0.35;
+}
+.day.selected {
+    border: 2px solid var(--primary);
+    background: #f1f1ff;
+}
+.day.today {
+    box-shadow:
+        inset 0 0 0 2px var(--green);
+}
+.day-number {
+    font-weight: bold;
+}
+.event-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: var(--primary);
+    border-radius: 50%;
+    margin-left: 5px;
+}
+.event-preview {
+    margin-top: 7px;
+    font-size: 11px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: #e9e9ff;
+    color: #494bd0;
+    padding: 4px;
+    border-radius: 6px;
+}
+.event-preview.green {
+    background: #e7f8ef;
+    color: #147a4b;
+}
+.event-preview.orange {
+    background: #fff2d9;
+    color: #986000;
+}
+/* FORM */
+.form {
+    display: grid;
+    grid-template-columns:
+        1fr
+        160px
+        150px
+        auto;
+    gap: 10px;
+}
+.form input,
+.form select {
+    padding: 13px;
+    border:
+        1px solid var(--border);
+    border-radius: 12px;
+    font-size: 15px;
+    background: #fafbfe;
+    outline: none;
+}
+.add-button {
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            var(--primary-light)
+        );
+    color: white;
+    border-radius: 12px;
+    padding: 13px 20px;
+    font-weight: bold;
+}
+/* EVENTS */
+.selected-title {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    text-transform: capitalize;
+}
+.event {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px 4px;
+    border-bottom:
+        1px solid var(--border);
+}
+.event:last-child {
+    border-bottom: 0;
+}
+.event-info {
+    flex: 1;
+}
+.event-name {
+    font-weight: bold;
+}
+.event-meta {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+.delete {
+    background: #fff0f0;
+    color: var(--red);
+    border-radius: 10px;
+    padding: 8px 11px;
+}
+/* REMINDERS */
+.reminder {
+    padding: 14px;
+    border-radius: 14px;
+    background: #fff6dc;
+    border:
+        1px solid #ffe3a0;
+    margin-bottom: 10px;
+}
+.reminder strong {
+    display: block;
+    margin-bottom: 4px;
+}
+.notification-button {
+    background: var(--primary);
+    color: white;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+.empty {
+    text-align: center;
+    color: var(--muted);
+    padding: 25px;
+}
+/* TELEFON */
+@media(max-width:750px) {
+    .container {
+        padding: 12px;
+    }
+    .logo h1 {
+        font-size: 25px;
+    }
+    .form {
+        grid-template-columns:
+            1fr
+            1fr;
+    }
+    .form input:first-child {
+        grid-column: 1 / -1;
+    }
+    .add-button {
+        grid-column: 1 / -1;
+    }
+    .day {
+        min-height: 65px;
+        padding: 6px;
+    }
+    .event-preview {
+        font-size: 9px;
+    }
+    .week div {
+        font-size: 10px;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<!-- HEADER -->
+<div class="top">
+    <div class="logo">
+        <h1>
+            📅 Planificatorul meu
+        </h1>
+        <p>
+            Organizează-ți fiecare zi.
+        </p>
+    </div>
+    <button
+        class="today-button"
+        onclick="goToday()">
+        Azi
+    </button>
+</div>
+<!-- CALENDAR -->
+<div class="card">
+    <div class="calendar-header">
+        <div
+            class="month-title"
+            id="monthTitle">
+        </div>
+        <div class="navigation">
+            <button
+                onclick="changeMonth(-1)">
+                ‹
+            </button>
+            <button
+                onclick="changeMonth(1)">
+                ›
+            </button>
+        </div>
+    </div>
+    <div class="week">
+        <div>Lun</div>
+        <div>Mar</div>
+        <div>Mie</div>
+        <div>Joi</div>
+        <div>Vin</div>
+        <div>Sâm</div>
+        <div>Dum</div>
+    </div>
+    <div
+        class="calendar"
+        id="calendar">
+    </div>
+</div>
+<!-- ADAUGARE -->
+<div class="card">
+    <div
+        class="selected-title"
+        id="selectedTitle">
+    </div>
+    <div class="form">
+        <input
+            id="eventName"
+            placeholder="Ce ai de făcut?"
+        >
+        <input
+            id="eventTime"
+            type="time"
+        >
+        <select id="eventType">
+            <option value="blue">
+                📌 Sarcină
+            </option>
+            <option value="green">
+                ✅ Important
+            </option>
+            <option value="orange">
+                ⏰ Eveniment
+            </option>
+        </select>
+        <button
+            class="add-button"
+            onclick="addEvent()">
+            + Adaugă
+        </button>
+    </div>
+</div>
+<!-- REMINDERE -->
+<div class="card">
+    <h3>
+        🔔 Remindere
+    </h3>
+    <div id="reminders">
+    </div>
+    <button
+        class="notification-button"
+        onclick="enableNotifications()">
+        Activează notificările
+    </button>
+    <p style="color:#747b8c;font-size:12px">
+        Vei vedea aici ce ai programat
+        pentru mâine și următoarele zile.
+    </p>
+</div>
+<!-- EVENIMENTE -->
+<div class="card">
+    <div class="selected-title">
+        📋 Evenimente pentru ziua aleasă
+    </div>
+    <div id="events">
+    </div>
+</div>
+</div>
+<script>
+/* =========================
+   SALVARE
+========================= */
+const STORAGE_KEY =
+    "calendar_personal_v1";
+let events =
+    JSON.parse(
+        localStorage.getItem(
+            STORAGE_KEY
+        ) || "{}"
+    );
+/* =========================
+   ZIUA SELECTATA
+========================= */
+let selected =
+    new Date();
+selected.setHours(
+    0,0,0,0
+);
+/* LUNA AFISATA */
+let view =
+    new Date(
+        selected.getFullYear(),
+        selected.getMonth(),
+        1
+    );
+/* =========================
+   FUNCTII DATA
+========================= */
+function dateKey(date) {
+    return (
+        date.getFullYear()
+        + "-"
+        + String(
+            date.getMonth() + 1
+        ).padStart(2,"0")
+        + "-"
+        + String(
+            date.getDate()
+        ).padStart(2,"0")
+    );
+}
+function sameDay(a,b) {
+    return dateKey(a)
+        === dateKey(b);
+}
+function formatDate(date) {
+    return date.toLocaleDateString(
+        "ro-RO",
+        {
+            weekday:"long",
+            day:"numeric",
+            month:"long",
+            year:"numeric"
+        }
+    );
+}
+function getEvents(key) {
+    return events[key] || [];
+}
+function save() {
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(events)
+    );
+}
+/* =========================
+   AFISARE CALENDAR
+========================= */
+function renderCalendar() {
+    document
+        .getElementById("monthTitle")
+        .textContent =
+        view.toLocaleDateString(
+            "ro-RO",
+            {
+                month:"long",
+                year:"numeric"
+            }
+        );
+    const calendar =
+        document.getElementById(
+            "calendar"
+        );
+    calendar.innerHTML = "";
+    const firstDay =
+        new Date(
+            view.getFullYear(),
+            view.getMonth(),
+            1
+        );
+    let start =
+        (firstDay.getDay() + 6) % 7;
+    const days =
+        new Date(
+            view.getFullYear(),
+            view.getMonth() + 1,
+            0
+        ).getDate();
+    for (
+        let i = 0;
+        i < 42;
+        i++
+    ) {
+        const dayNumber =
+            i - start + 1;
+        const date =
+            new Date(
+                view.getFullYear(),
+                view.getMonth(),
+                dayNumber
+            );
+        const differentMonth =
+            date.getMonth()
+            !== view.getMonth();
+        const day =
+            document.createElement(
+                "div"
+            );
+        day.className =
+            "day";
+        if (
+            differentMonth
+        ) {
+            day.classList.add(
+                "other-month"
+            );
+        }
+        if (
+            sameDay(
+                date,
+                selected
+            )
+        ) {
+            day.classList.add(
+                "selected"
+            );
+        }
+        if (
+            sameDay(
+                date,
+                new Date()
+            )
+        ) {
+            day.classList.add(
+                "today"
+            );
+        }
+        const list =
+            getEvents(
+                dateKey(date)
+            );
+        day.innerHTML = `
+            <div class="day-number">
+                ${date.getDate()}
+                ${
+                    list.length
+                    ? '<span class="event-dot"></span>'
+                    : ''
+                }
+            </div>
+        `;
+        list
+        .slice(0,2)
+        .forEach(
+            event => {
+                day.innerHTML += `
+                    <div
+                        class="
+                        event-preview
+                        ${event.type}
+                        "
+                    >
+                        ${
+                            event.time
+                            ? event.time + " "
+                            : ""
+                        }
+                        ${escapeHTML(
+                            event.name
+                        )}
+                    </div>
+                `;
+            }
+        );
+        if (
+            list.length > 2
+        ) {
+            day.innerHTML += `
+                <div
+                    style="
+                    font-size:10px;
+                    color:#777;
+                    margin-top:3px;
+                    "
+                >
+                    +${list.length - 2}
+                    alte evenimente
+                </div>
+            `;
+        }
+        day.onclick =
+            function() {
+                selected =
+                    new Date(date);
+                render();
+            };
+        calendar.appendChild(
+            day
+        );
+    }
+}
+/* =========================
+   ADAUGA EVENIMENT
+========================= */
+function addEvent() {
+    const nameInput =
+        document.getElementById(
+            "eventName"
+        );
+    const name =
+        nameInput.value.trim();
+    if (!name) {
+        alert(
+            "Scrie mai întâi ce ai de făcut."
+        );
+        return;
+    }
+    const key =
+        dateKey(selected);
+    if (!events[key]) {
+        events[key] = [];
+    }
+    events[key].push({
+        id: Date.now(),
+        name: name,
+        time:
+            document.getElementById(
+                "eventTime"
+            ).value,
+        type:
+            document.getElementById(
+                "eventType"
+            ).value
+    });
+    save();
+    nameInput.value = "";
+    document.getElementById(
+        "eventTime"
+    ).value = "";
+    render();
+}
+/* ENTER */
+document
+.getElementById("eventName")
+.addEventListener(
+    "keydown",
+    function(event) {
+        if (
+            event.key === "Enter"
+        ) {
+            addEvent();
+        }
+    }
+);
+/* =========================
+   STERGE EVENIMENT
+========================= */
+function deleteEvent(id) {
+    const key =
+        dateKey(selected);
+    events[key] =
+        getEvents(key)
+        .filter(
+            event =>
+                event.id !== id
+        );
+    if (
+        events[key].length === 0
+    ) {
+        delete events[key];
+    }
+    save();
+    render();
+}
+/* =========================
+   AFISARE EVENIMENTE
+========================= */
+function renderEvents() {
+    document
+        .getElementById(
+            "selectedTitle"
+        )
+        .textContent =
+        formatDate(selected);
+    const box =
+        document.getElementById(
+            "events"
+        );
+    const list =
+        getEvents(
+            dateKey(selected)
+        );
+    if (
+        list.length === 0
+    ) {
+        box.innerHTML = `
+            <div class="empty">
+                Nu ai nimic programat
+                pentru această zi. ✨
+            </div>
+        `;
+        return;
+    }
+    box.innerHTML =
+        list.map(
+            event => `
+            <div class="event">
+                <div class="event-info">
+                    <div class="event-name">
+                        ${
+                            event.type === "green"
+                            ? "✅"
+                            : event.type === "orange"
+                            ? "⏰"
+                            : "📌"
+                        }
+                        ${escapeHTML(
+                            event.name
+                        )}
+                    </div>
+                    <div class="event-meta">
+                        ${
+                            event.time
+                            ? event.time
+                            : "Fără oră"
+                        }
+                        ·
+                        ${formatDate(
+                            selected
+                        )}
+                    </div>
+                </div>
+                <button
+                    class="delete"
+                    onclick="
+                        deleteEvent(
+                            ${event.id}
+                        )
+                    "
+                >
+                    Șterge
+                </button>
+            </div>
+        `
+        )
+        .join("");
+}
+/* =========================
+   REMINDERE
+========================= */
+function renderReminders() {
+    const box =
+        document.getElementById(
+            "reminders"
+        );
+    const today =
+        new Date();
+    today.setHours(
+        0,0,0,0
+    );
+    let html = "";
+    /*
+       MÂINE
+    */
+    const tomorrow =
+        new Date(today);
+    tomorrow.setDate(
+        tomorrow.getDate() + 1
+    );
+    const tomorrowEvents =
+        getEvents(
+            dateKey(tomorrow)
+        );
+    if (
+        tomorrowEvents.length
+    ) {
+        html += `
+            <div class="reminder">
+                <strong>
+                    ⏰ Mâine ai
+                    ${tomorrowEvents.length}
+                    ${
+                        tomorrowEvents.length === 1
+                        ? "eveniment"
+                        : "evenimente"
+                    }
+                </strong>
+                ${
+                    tomorrowEvents
+                    .map(
+                        event =>
+                        `• ${
+                            event.time
+                            ? event.time + " "
+                            : ""
+                        }${
+                            escapeHTML(
+                                event.name
+                            )
+                        }`
+                    )
+                    .join("<br>")
+                }
+            </div>
+        `;
+    }
+    /*
+       URMĂTOARELE 7 ZILE
+    */
+    for (
+        let i = 2;
+        i <= 7;
+        i++
+    ) {
+        const date =
+            new Date(today);
+        date.setDate(
+            date.getDate() + i
+        );
+        const list =
+            getEvents(
+                dateKey(date)
+            );
+        if (
+            list.length
+        ) {
+            html += `
+                <div
+                    class="reminder"
+                    style="
+                    background:#f5f5ff;
+                    border-color:#dcdcff;
+                    color:#4547b8;
+                    "
+                >
+                    <strong>
+                        📅 ${formatDate(
+                            date
+                        )}
+                    </strong>
+                    ${
+                        list
+                        .map(
+                            event =>
+                            `• ${
+                                event.time
+                                ? event.time + " "
+                                : ""
+                            }${
+                                escapeHTML(
+                                    event.name
+                                )
+                            }`
+                        )
+                        .join("<br>")
+                    }
+                </div>
+            `;
+        }
+    }
+    if (!html) {
+        html = `
+            <div class="empty">
+                Nu ai evenimente apropiate. ✨
+            </div>
+        `;
+    }
+    box.innerHTML = html;
+    /*
+       NOTIFICARE
+    */
+    checkNotification(
+        tomorrowEvents
+    );
+}
+/* =========================
+   NOTIFICARE
+========================= */
+async function enableNotifications() {
+    if (
+        !("Notification" in window)
+    ) {
+        alert(
+            "Browserul tău nu suportă notificări."
+        );
+        return;
+    }
+    const permission =
+        await Notification
+            .requestPermission();
+    if (
+        permission === "granted"
+    ) {
+        new Notification(
+            "Planificatorul meu 🔔",
+            {
+                body:
+                "Notificările sunt activate."
+            }
+        );
+    }
+}
+/* =========================
+   REMINDER MÂINE
+========================= */
+function checkNotification(
+    list
+) {
+    if (
+        !list.length
+    ) {
+        return;
+    }
+    if (
+        !("Notification" in window)
+    ) {
+        return;
+    }
+    if (
+        Notification.permission
+        !== "granted"
+    ) {
+        return;
+    }
+    const notificationKey =
+        "notification_"
+        + dateKey(
+            new Date()
+        );
+    if (
+        localStorage.getItem(
+            notificationKey
+        ) === "sent"
+    ) {
+        return;
+    }
+    new Notification(
+        "Ai ceva mâine 📅",
+        {
+            body:
+                list
+                .map(
+                    event =>
+                    event.name
+                )
+                .join(", ")
+        }
+    );
+    localStorage.setItem(
+        notificationKey,
+        "sent"
+    );
+}
+/* =========================
+   LUNA
+========================= */
+function changeMonth(
+    amount
+) {
+    view =
+        new Date(
+            view.getFullYear(),
+            view.getMonth()
+                + amount,
+            1
+        );
+    render();
+}
+/* =========================
+   AZI
+========================= */
+function goToday() {
+    selected =
+        new Date();
+    selected.setHours(
+        0,0,0,0
+    );
+    view =
+        new Date(
+            selected.getFullYear(),
+            selected.getMonth(),
+            1
+        );
+    render();
+}
+/* =========================
+   SECURITATE TEXT
+========================= */
+function escapeHTML(text) {
+    return text.replace(
+        /[&<>"']/g,
+        function(character) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[character];
+        }
+    );
+}
+/* =========================
+   PORNIRE
+========================= */
+function render() {
+    renderCalendar();
+    renderEvents();
+    renderReminders();
+}
+render();
+</script>
+</body>
+</html>
